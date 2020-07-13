@@ -1,8 +1,12 @@
 {
   "version": 2,
-  "dgSpecHash": "DuknD69KZi7WekFckD1b5O+J+mC+9eNV/FsPFIWTHm3UFhuYcCMiolmon0hkjdNhMzX3hE0Ko1riAf13KTu7AA==",
+  "dgSpecHash": "HKLt5lPXs5kZGgonzV8HefuvWmYeRY/USH4uZnT9lU298+gmstAud2tWljDGfLBVpnOBQ9q+MEDJdRTT6lwoQQ==",
   "success": true,
   "projectFilePath": "C:\\Users\\Michał Piliński\\Documents\\raymarching-engine\\raymarching\\raymarching\\raymarching.csproj",
-  "expectedPackageFiles": [],
+  "expectedPackageFiles": [
+    "C:\\Users\\Michał Piliński\\.nuget\\packages\\microsoft.netcore.platforms\\3.1.0\\microsoft.netcore.platforms.3.1.0.nupkg.sha512",
+    "C:\\Users\\Michał Piliński\\.nuget\\packages\\microsoft.win32.systemevents\\4.7.0\\microsoft.win32.systemevents.4.7.0.nupkg.sha512",
+    "C:\\Users\\Michał Piliński\\.nuget\\packages\\system.drawing.common\\4.7.0\\system.drawing.common.4.7.0.nupkg.sha512"
+  ],
   "logs": []
 }
