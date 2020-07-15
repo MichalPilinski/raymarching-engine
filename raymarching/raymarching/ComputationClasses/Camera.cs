@@ -1,10 +1,11 @@
-﻿using System.Numerics;
+﻿using System.Dynamic;
+using System.Numerics;
 
 namespace raymarching.ComputationClasses
 {
     class Camera
     {
-        private Vector3 CameraPosition { get; set; }
+        public Vector3 CameraPosition { get; private set; }
         private Vector3 CameraTarget { get; set; }
 
         private Vector2 SensorSize;
@@ -16,7 +17,7 @@ namespace raymarching.ComputationClasses
         private Vector3 SensorYTensor, SensorXTensor;
         private readonly Vector3 XTensor = new Vector3(0, 0, 1);
 
-        Camera(Vector2 _sensorSize, Vector2 _resolution, float _focalLength, float _viewTensorAngle)
+        public Camera(Vector2 _sensorSize, Vector2 _resolution, float _focalLength, float _viewTensorAngle)
         {
             CameraPosition = new Vector3();
             CameraTarget = new Vector3(1, 1, 1);
@@ -46,11 +47,11 @@ namespace raymarching.ComputationClasses
             Vector3.Transform(SensorXTensor, RotationMatrix);
         }
 
-        public void UpdateCamera()
+        public void Update()
         {
+            UpdateCameraVector();
             UpdateLocalCoords();
             RotateViewTensors(ViewTensorsAngle);
-            UpdateCameraVector();
         }
 
         public Vector3 GetRayDirection(int PosX, int PosY)
@@ -59,6 +60,16 @@ namespace raymarching.ComputationClasses
             Vector3 SensorGlobalY = SensorSize.Y * SensorYTensor * (PosY / Resolution.Y - 0.5f);
 
             return CameraVector + SensorGlobalX + SensorGlobalY;
+        }
+
+        public void PointAt(Vector3 Target)
+        {
+            CameraTarget = Target;
+        }
+
+        public void Place(Vector3 Position)
+        {
+            CameraPosition = Position;
         }
     }
 }

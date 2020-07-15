@@ -15,6 +15,8 @@ using System.Windows.Shapes;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Windows.Media;
+using raymarching.ComputationClasses;
+using System.Numerics;
 
 namespace raymarching
 {
@@ -24,47 +26,60 @@ namespace raymarching
     public partial class MainWindow : Window
     {
         WriteableBitmap TempBitmap { set; get; }
+        Renderer Renderer { set; get; }
 
         public MainWindow()
         {
             InitializeComponent();
-
+            
             TempBitmap = new WriteableBitmap((int)this.Width, (int)this.Height, 96, 96, System.Windows.Media.PixelFormats.Bgr32, null);
+         
+            InitializeCanvas();
+            InitializeRenderer();
 
-            Canvas.MouseMove += new MouseEventHandler(RenderLoopEvent);
+            Canvas.MouseDown += new MouseButtonEventHandler(RenderLoopEvent);
+        }
 
+        private void InitializeCanvas()
+        {
             Canvas.Source = TempBitmap;
             Canvas.Stretch = Stretch.None;
             Canvas.HorizontalAlignment = HorizontalAlignment.Left;
             Canvas.VerticalAlignment = VerticalAlignment.Top;
         }
 
-        protected void RenderLoopEvent(object sender, EventArgs e)
+        private void InitializeRenderer()
         {
-            DrawRandomData(TempBitmap);
+            Renderer = new Renderer(new Vector2((int)this.Width, (int)this.Height), new Vector2(0.1f, 100f));
         }
 
-        private void DrawRandomData(WriteableBitmap bitmap)
+        protected void RenderLoopEvent(object sender, EventArgs e)
+        {
+            System.Drawing.Color[,] RenderPixelArray = Renderer.Render();
+            DrawData(TempBitmap, RenderPixelArray);
+        }
+
+        private void DrawData(WriteableBitmap Bitmap, System.Drawing.Color[,] Pixels)
         {
             try
             {
-                bitmap.Lock();
+                Bitmap.Lock();
 
                 unsafe
                 {
-                    IntPtr pBackBuffer = bitmap.BackBuffer;
+                    IntPtr pBackBuffer = Bitmap.BackBuffer;
                     int RandomNum = new Random().Next(255);
 
-                    for (int i = 0; i < bitmap.PixelHeight; i++)
+                    for (int i = 0; i < Bitmap.PixelHeight; i++)
                     {
-                        for (int j = 0; j < bitmap.PixelWidth; j++)
+                        for (int j = 0; j < Bitmap.PixelWidth; j++)
                         {
                             pBackBuffer += 4;
 
                             // Compute the pixel's color.
-                            int color_data = 0 << 16; // R
-                            color_data |= 0 << 8;   // G
-                            color_data |= 0 << 0;   // B
+                            int color_data = Pixels[j,i].R << 16; // R
+                            color_data |= Pixels[j,i].G << 8;   // G
+                            color_data |= Pixels[j,i].B << 0;   // B
 
                             // Assign the color data to the pixel.
                             *((int*)pBackBuffer) = color_data;
@@ -73,12 +88,12 @@ namespace raymarching
                 }
 
                 // Specify the area of the bitmap that changed.
-                bitmap.AddDirtyRect(new Int32Rect(0, 0, bitmap.PixelWidth, bitmap.PixelHeight));
+                Bitmap.AddDirtyRect(new Int32Rect(0, 0, Bitmap.PixelWidth, Bitmap.PixelHeight));
             }
             finally
             {
                 // Release the back buffer and make it available for display.
-                bitmap.Unlock();
+                Bitmap.Unlock();
             }
         }
     }
