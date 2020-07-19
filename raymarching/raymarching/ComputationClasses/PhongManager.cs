@@ -20,7 +20,7 @@ namespace raymarching.ComputationClasses
             AmbientColor = _ambient;
         }
 
-        public Color GetColor(Vector3 LightingCoefs, Vector3 ObjectPos, List<ILight> Lights)
+        public Color GetColor(Vector3 LightingCoefs, Vector3 CameraPos, Vector3 IntersectPos, List<ILight> Lights)
         {
             var Ambient = GetAmbient(LightingCoefs.X);
 
@@ -29,7 +29,7 @@ namespace raymarching.ComputationClasses
 
             foreach (var Light in Lights)
             {
-                Diffuse = ColorUtils.Add(Diffuse, GetDiffused(LightingCoefs.Y, Light, ObjectPos));
+                Diffuse = ColorUtils.Add(Diffuse, GetDiffused(CameraPos, IntersectPos, Light, LightingCoefs.Y));
             }
 
             return ColorUtils.Add(Ambient, Diffuse, Specular);
@@ -40,9 +40,14 @@ namespace raymarching.ComputationClasses
             return ColorUtils.Multiply(AmbientColor, AmbientCoef);
         }
 
-        Color GetDiffused(float LightingCoef, ILight Light, Vector3 ObjectPos)
+        Color GetDiffused(Vector3 CameraPos, Vector3 IntersectPos, ILight Light, float LightingCoef)
         {
-            return Color.Black;
+            Vector3 VecIncoming = CameraPos - IntersectPos;
+            Vector3 VecOutcoming = Light.Position - IntersectPos;
+            
+            float AngleCos = Vector3.Dot(VecIncoming, VecOutcoming) / (VecIncoming.Length() * VecOutcoming.Length());
+
+            return ColorUtils.Multiply(Light.Color, AngleCos * Light.Intensity * LightingCoef);
         }
     }
 }

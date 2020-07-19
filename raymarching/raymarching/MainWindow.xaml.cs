@@ -39,11 +39,11 @@ namespace raymarching
 
             var SpheresConst = new Vector3(1, 10, 10);
             SceneObjects.Add(new Sphere(new Vector3(15, 15, 15), 5, SpheresConst));
-            SceneObjects.Add(new Sphere(new Vector3(15, 15, 8), 2, new Vector3(5, 5, 5)));
+            SceneObjects.Add(new Sphere(new Vector3(15, 15, 8), 2, SpheresConst));
             SceneObjects.Add(new Sphere(new Vector3(15, 6, 7), 2, SpheresConst));
 
             var SceneLights = new List<ILight>();
-            SceneLights.Add(new PointLight(new Vector3(10, 10, 0), 1));
+            SceneLights.Add(new PointLight(new Vector3(5, 5, 5), System.Drawing.Color.Red, 0.1f));
 
             this.Renderer.SetScene(SceneObjects, SceneLights);
         }

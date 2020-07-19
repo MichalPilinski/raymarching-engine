@@ -100,7 +100,7 @@ namespace raymarching.ComputationClasses
 
             if(Distance < RayBoundaryLength.X)
             {
-                return ComputeColor(MinDistObject.LightingCoefs);
+                return ComputeColor(RayPosition, MinDistObject.LightingCoefs);
             }
             else
             {
@@ -108,9 +108,9 @@ namespace raymarching.ComputationClasses
             }
         }
 
-        private Color ComputeColor(Vector3 LightingCoefs)
+        private Color ComputeColor(Vector3 Intersect, Vector3 LightingCoefs)
         {
-            return PhongManager.GetColor(LightingCoefs, Camera.Position, Lights);
+            return PhongManager.GetColor(LightingCoefs, Camera.Position, Intersect, Lights);
         }
 
         private Tuple<float, IDistanceProvider> GetMinimumDistance(Vector3 Position)
