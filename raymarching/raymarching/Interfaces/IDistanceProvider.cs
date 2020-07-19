@@ -8,5 +8,6 @@ namespace raymarching.Interfaces
     interface IDistanceProvider
     {
         float GetDistance(Vector3 rayPosition);
+        Vector3 LightingCoefs { get; }
     }
 }

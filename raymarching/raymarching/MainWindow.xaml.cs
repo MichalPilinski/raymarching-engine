@@ -1,22 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using System.Drawing.Imaging;
-using System.IO;
 using System.Windows.Media;
 using raymarching.ComputationClasses;
 using System.Numerics;
+using raymarching.Interfaces;
+using raymarching.DistanceProviders;
+using raymarching.Lights;
 
 namespace raymarching
 {
@@ -36,13 +28,30 @@ namespace raymarching
          
             InitializeCanvas();
             InitializeRenderer();
+            CreateScene();
 
             Canvas.MouseDown += new MouseButtonEventHandler(RenderLoopEvent);
+        }
+
+        private void CreateScene()
+        {
+            var SceneObjects = new List<IDistanceProvider>();
+
+            var SpheresConst = new Vector3(1, 10, 10);
+            SceneObjects.Add(new Sphere(new Vector3(15, 15, 15), 5, SpheresConst));
+            SceneObjects.Add(new Sphere(new Vector3(15, 15, 8), 2, new Vector3(5, 5, 5)));
+            SceneObjects.Add(new Sphere(new Vector3(15, 6, 7), 2, SpheresConst));
+
+            var SceneLights = new List<ILight>();
+            SceneLights.Add(new PointLight(new Vector3(10, 10, 0), 1));
+
+            this.Renderer.SetScene(SceneObjects, SceneLights);
         }
 
         private void InitializeCanvas()
         {
             Canvas.Source = TempBitmap;
+
             Canvas.Stretch = Stretch.None;
             Canvas.HorizontalAlignment = HorizontalAlignment.Left;
             Canvas.VerticalAlignment = VerticalAlignment.Top;

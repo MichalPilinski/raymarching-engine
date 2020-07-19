@@ -5,7 +5,7 @@ namespace raymarching.ComputationClasses
 {
     class Camera
     {
-        public Vector3 CameraPosition { get; private set; }
+        public Vector3 Position { get; private set; }
         private Vector3 CameraTarget { get; set; }
 
         private Vector2 SensorSize;
@@ -19,7 +19,7 @@ namespace raymarching.ComputationClasses
 
         public Camera(Vector2 _sensorSize, Vector2 _resolution, float _focalLength, float _viewTensorAngle)
         {
-            CameraPosition = new Vector3();
+            Position = new Vector3();
             CameraTarget = new Vector3(1, 1, 1);
 
             SensorSize = _sensorSize;
@@ -36,7 +36,7 @@ namespace raymarching.ComputationClasses
 
         private void UpdateCameraVector()
         {
-            CameraVector = Vector3.Normalize(CameraTarget - CameraPosition) * FocalLength;
+            CameraVector = Vector3.Normalize(CameraTarget - Position) * FocalLength;
         }
 
         private void RotateViewTensors(float angle)
@@ -67,9 +67,9 @@ namespace raymarching.ComputationClasses
             CameraTarget = Target;
         }
 
-        public void Place(Vector3 Position)
+        public void Place(Vector3 _position)
         {
-            CameraPosition = Position;
+            Position = _position;
         }
     }
 }

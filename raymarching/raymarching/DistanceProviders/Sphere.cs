@@ -8,7 +8,7 @@ namespace raymarching.DistanceProviders
 {
     class Sphere: DistanceProviderBase
     {
-        public Sphere(Vector3 _position, float _radius): base(_position)
+        public Sphere(Vector3 _position, float _radius, Vector3 _lighting) : base(_position, _lighting)
         {
             Radius = _radius;
         }
