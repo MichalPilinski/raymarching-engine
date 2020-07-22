@@ -38,7 +38,7 @@ namespace raymarching.ComputationClasses
         private void InitializeCamera()
         {
             Camera = new Camera(new Vector2(1, 6f / 8), WindowSize, 1f, 0);
-            Camera.PointAt(new Vector3(5, 5, 5));
+            Camera.PointAt(new Vector3(15, 0, 0));
             Camera.Place(new Vector3(0, 0, 0));
 
             Camera.Update();
@@ -46,7 +46,7 @@ namespace raymarching.ComputationClasses
 
         private void InitializeManagers()
         {
-            PhongManager = new PhongManager(Color.White);
+            PhongManager = new PhongManager();
         }
         #endregion
 
@@ -78,7 +78,6 @@ namespace raymarching.ComputationClasses
 
         private Color ComputeRay(Vector3 RayStartingPos, Vector3 RayDirection)
         {
-            float FailSafeCount = 1000;
             int Iteriations = 0;
             Vector3 RayPosition = RayStartingPos;
 
@@ -86,12 +85,6 @@ namespace raymarching.ComputationClasses
 
             while (Distance > RayBoundaryLength.X && Distance < RayBoundaryLength.Y)
             {
-                FailSafeCount--;
-                if(FailSafeCount < 0)
-                {
-                    break;
-                }
-
                 Iteriations++;
 
                 (Distance, MinDistObject) = GetMinimumDistance(RayPosition);
@@ -100,7 +93,12 @@ namespace raymarching.ComputationClasses
 
             if(Distance < RayBoundaryLength.X)
             {
-                return ComputeColor(RayPosition, MinDistObject.LightingCoefs);
+                Vector3 Normal = MinDistObject.GetGradient(RayPosition, RayBoundaryLength.X / 5);
+                Vector3 LihgtingCoefs = MinDistObject.LightingCoefs;
+
+                Color MinDistColor = MinDistObject.Color;
+
+                return ComputeColor(MinDistColor, RayPosition, LihgtingCoefs, Normal);
             }
             else
             {
@@ -108,9 +106,9 @@ namespace raymarching.ComputationClasses
             }
         }
 
-        private Color ComputeColor(Vector3 Intersect, Vector3 LightingCoefs)
+        private Color ComputeColor(Color ObjectColor, Vector3 Intersect, Vector3 LightingCoefs, Vector3 Normal)
         {
-            return PhongManager.GetColor(LightingCoefs, Camera.Position, Intersect, Lights);
+            return PhongManager.GetColor(Lights, ObjectColor, LightingCoefs, Camera.Position, Intersect, Normal);
         }
 
         private Tuple<float, IDistanceProvider> GetMinimumDistance(Vector3 Position)
